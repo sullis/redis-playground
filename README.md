@@ -6,3 +6,4 @@
 
 ## Apache NiFi and Redis
 - [nifi-redis-bundle](https://github.com/apache/nifi/tree/main/nifi-extension-bundles/nifi-redis-bundle)
+- [NiFi Redis testcontainers](https://github.com/apache/nifi/tree/main/nifi-extension-bundles/nifi-redis-bundle/nifi-redis-extensions/src/test/java/org/apache/nifi/redis/testcontainers)
