@@ -3,7 +3,6 @@ package io.github.sullis.playground.redis;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.lifecycle.Startable;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
