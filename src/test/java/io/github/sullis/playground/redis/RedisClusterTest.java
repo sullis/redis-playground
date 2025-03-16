@@ -16,10 +16,6 @@ public class RedisClusterTest {
 
   @Test
   public void happyPath() {
-    for (Startable startable : cluster.getDependencies()) {
-      System.out.println("startable: " + startable);
-    }
-
     JedisPool pool = new JedisPool("localhost", cluster.getRedisPort(), cluster.getRedisUser(), cluster.getRedisPass());
     try (Jedis jedis = pool.getResource()) {
       jedis.set("clientName", "Jedis");
