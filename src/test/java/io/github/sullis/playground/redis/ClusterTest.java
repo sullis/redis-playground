@@ -8,7 +8,7 @@ import org.junit.jupiter.params.Parameter;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.FieldSource;
 import org.testcontainers.utility.DockerImageName;
-import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.RedisClusterClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -92,7 +92,7 @@ public class ClusterTest {
 
   @Test
   void clientDiscoversEveryNodeFromASingleSeedAddress() {
-    JedisCluster client = cluster.client();
+    RedisClusterClient client = cluster.client();
 
     assertThat(client.ping()).isEqualTo("PONG");
 
@@ -117,7 +117,7 @@ public class ClusterTest {
 
   @Test
   void aKeyIsStoredOnlyByTheShardThatOwnsItsSlot() {
-    JedisCluster client = cluster.client();
+    RedisClusterClient client = cluster.client();
 
     // The per-node key counts below are only meaningful if the keys written here are the only
     // ones there are.

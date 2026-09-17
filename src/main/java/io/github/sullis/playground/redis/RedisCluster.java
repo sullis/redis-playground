@@ -22,13 +22,13 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.RedisClusterClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A running Redis cluster -- {@code numShards} primaries owning an even split of the 16384 hash
- * slots -- together with the {@link JedisCluster} that reaches it.
+ * slots -- together with the {@link RedisClusterClient} that reaches it.
  *
  * <p>This is cluster mode, not replication: there is no {@code --replicaof} link and no single
  * primary, so the sibling {@link RedisReplication} is the fixture for anything about the
@@ -100,7 +100,7 @@ final class RedisCluster implements BeforeAllCallback, AfterAllCallback {
    * Built on first use and kept for the life of the cluster: the client holds a connection pool
    * per node, which is not worth rebuilding per test method.
    */
-  private JedisCluster client;
+  private RedisClusterClient client;
 
   /** One direct connection per node, built on demand; null at an index no test has asked about. */
   private final List<Jedis> nodeClients = new ArrayList<>();
@@ -279,10 +279,10 @@ final class RedisCluster implements BeforeAllCallback, AfterAllCallback {
    * A client for the cluster, seeded with one node's address only: the rest of the topology is
    * discovered, and handing it every address would hide a discovery that does not work.
    */
-  JedisCluster client() {
+  RedisClusterClient client() {
     if (client == null) {
       LOGGER.info("connecting to seed {}:{}", LOOPBACK, nodePort(0));
-      client = new JedisCluster(new HostAndPort(LOOPBACK, nodePort(0)));
+      client = RedisClusterClient.create(new HostAndPort(LOOPBACK, nodePort(0)));
     }
     return client;
   }
