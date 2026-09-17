@@ -9,15 +9,16 @@ import redis.clients.jedis.JedisPool;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
-public class RedisClusterTest {
+public class RedisServerTest {
   @Container
-  static RedisCluster cluster = new RedisCluster();
+  static RedisServer redis = new RedisServer();
 
   @Test
   public void happyPath() {
-    JedisPool pool = new JedisPool("localhost", cluster.getRedisPort(), cluster.getRedisUser(), cluster.getRedisPass());
+    JedisPool pool = new JedisPool(redis.getHost(), redis.getRedisPort(), redis.getRedisUser(), redis.getRedisPass());
     try (Jedis jedis = pool.getResource()) {
       jedis.set("clientName", "Jedis");
+      assertThat(jedis.get("clientName")).isEqualTo("Jedis");
     }
   }
 }
