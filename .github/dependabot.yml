@@ -3,10 +3,39 @@ updates:
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "daily"
       time: "02:43"
+    open-pull-requests-limit: 20
+    # Grouped by the thing being upgraded rather than left one pull request per artifact.
+    # Families that share a release train produce one reviewable diff instead of four that
+    # each rebase the others.
+    groups:
+      testcontainers:
+        patterns:
+          - "org.testcontainers:*"
+          # docker-java-api is not managed by testcontainers-bom but has to agree with what
+          # testcontainers resolves, so the two belong in one pull request: grouped, the
+          # enforcer's requireUpperBoundDeps rule judges both versions at once, and a
+          # disagreement fails that build rather than the next unrelated one.
+          - "com.github.docker-java:*"
+      junit:
+        patterns:
+          - "org.junit:*"
+          - "org.junit.jupiter:*"
+      logging:
+        patterns:
+          - "org.slf4j:*"
+          - "ch.qos.logback:*"
+      build-plugins:
+        patterns:
+          - "org.apache.maven.plugins:*"
+          - "org.jacoco:*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "daily"
       time: "03:00"
+    groups:
+      github-actions:
+        patterns:
+          - "*"

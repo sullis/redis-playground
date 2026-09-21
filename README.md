@@ -69,6 +69,17 @@ Redis version.
 A run narrowed to one class trips the coverage floor described below, so those runs want
 `-Djacoco.check.skip=true` too.
 
+Three checks run before any container starts, so that a build broken in these ways fails in
+seconds rather than after the suite. The enforcer rules hold the Maven and Java floors above and
+reject a dependency that resolves *below* a version something else asked for — the case that
+matters here is `docker-java-api`, pinned by hand to track whatever Testcontainers resolves, which
+would otherwise surface at runtime as a `NoSuchMethodError`. The compiler runs `-Xlint:all` with
+warnings fatal. The javadoc pass publishes nothing: it is there to catch a `{@link}` left pointing
+at a method that has since been renamed. It runs over the tests as well as the fixtures, because
+the test classes are the ones that explain themselves by naming classes they never call. Missing
+`@param`/`@return` tags are deliberately not an error, because both trees explain themselves in
+prose rather than in tag boilerplate.
+
 ## Fixtures
 
 Two Testcontainers fixtures stand up every topology in the table above, between them through three
