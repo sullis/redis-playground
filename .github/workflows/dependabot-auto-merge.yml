@@ -1,7 +1,6 @@
 name: Dependabot auto-merge
 on: pull_request
 
-
 jobs:
   build:
     if: github.actor == 'dependabot[bot]'
