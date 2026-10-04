@@ -27,12 +27,16 @@
     <jacoco.version>0.8.15</jacoco.version>
     <!-- The bundle-wide instruction coverage the jacoco check execution enforces. The bundle is
          the fixtures under src/main/java and nothing else, so this is a floor on how much of them
-         the suite exercises; the suite sits a little above it. What it does not reach is the
-         fixtures' own failure handling: the port search giving up, and the catch blocks in
-         start() and close() that log and carry on. Reaching those means making a container or a
-         client fail on demand, which tests a mock rather than anything Redis does. So treat a
-         drop below this as real, but do not read the remainder as work to be done. -->
-    <jacoco.minimum.coverage>0.94</jacoco.minimum.coverage>
+         the suite exercises; the suite sits a little above it.
+
+         There is not much room left above this one. The cleanup in start() is reached, by
+         FailedStartTest starting each fixture on an image broken so that it fails partway. What
+         the suite does not reach is the rest of the fixtures' own failure handling: the port
+         search giving up, and the catch blocks in close() that log and carry on. Reaching those
+         means making a container or a client fail on demand, which is a mock rather than a test of
+         anything Redis does. So treat a drop below this as real, but do not read the remainder as
+         work to be done. -->
+    <jacoco.minimum.coverage>0.95</jacoco.minimum.coverage>
     <!-- An escape hatch for a partial run: fixture coverage is not a meaningful number when
          surefire was pointed at one class, so -Dtest=Foo wants this set too. -->
     <jacoco.check.skip>false</jacoco.check.skip>
@@ -61,15 +65,6 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-    </dependency>
-    <dependency>
-      <!-- A transitive of testcontainers, declared here because RedisCluster imports ExposedPort
-           and Ports directly to bind a container port to the same port on the host. Its version
-           is not managed by testcontainers-bom, so it is pinned here and tracks whatever
-           testcontainers resolves. -->
-      <groupId>com.github.docker-java</groupId>
-      <artifactId>docker-java-api</artifactId>
-      <version>3.7.1</version>
     </dependency>
     <dependency>
       <groupId>redis.clients</groupId>
@@ -146,10 +141,7 @@
                   <!-- Maven's nearest-wins resolution will quietly pick a version *below* what
                        some other dependency asked for, and the mismatch surfaces at runtime as a
                        NoSuchMethodError rather than at build time. This rule turns that into a
-                       build failure naming both versions. It is the rule that earns its keep
-                       here: docker-java-api is pinned by hand to whatever testcontainers
-                       resolves, so a testcontainers bump is exactly the shape of change that
-                       can leave the two disagreeing. -->
+                       build failure naming both versions. -->
                   <requireUpperBoundDeps/>
                   <banDuplicatePomDependencyVersions/>
                 </rules>

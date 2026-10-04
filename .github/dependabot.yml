@@ -13,11 +13,6 @@ updates:
       testcontainers:
         patterns:
           - "org.testcontainers:*"
-          # docker-java-api is not managed by testcontainers-bom but has to agree with what
-          # testcontainers resolves, so the two belong in one pull request: grouped, the
-          # enforcer's requireUpperBoundDeps rule judges both versions at once, and a
-          # disagreement fails that build rather than the next unrelated one.
-          - "com.github.docker-java:*"
       junit:
         patterns:
           - "org.junit:*"

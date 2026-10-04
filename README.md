@@ -39,6 +39,7 @@ public class StandaloneCommandsTest {
 | [`ClusterTest`](src/test/java/io/github/sullis/playground/redis/ClusterTest.java) | three shards | every node runs the version under test in cluster mode; a client discovers every node from a single seed address; every node agrees the slots are covered; a key lands only on the shard owning its slot |
 | [`ClusterExtensionTest`](src/test/java/io/github/sullis/playground/redis/ClusterExtensionTest.java) | three shards | `RedisCluster` forms a ready cluster when used as a plain `@RegisterExtension` field |
 | [`FixtureContractTest`](src/test/java/io/github/sullis/playground/redis/FixtureContractTest.java) | none | the guards that reject a topology which could not work, and the teardown of one that was declared but never started |
+| [`FailedStartTest`](src/test/java/io/github/sullis/playground/redis/FailedStartTest.java) | three shards; primary + replica, each on a deliberately broken image | a fixture whose start fails partway leaves no container running |
 
 `ReplicationTest` and `ClusterTest` run once per supported Redis major — 7 and 8 today, pinned to
 exact patches in [`RedisImage`](src/main/java/io/github/sullis/playground/redis/RedisImage.java) —
@@ -71,9 +72,8 @@ A run narrowed to one class trips the coverage floor described below, so those r
 
 Three checks run before any container starts, so that a build broken in these ways fails in
 seconds rather than after the suite. The enforcer rules hold the Maven and Java floors above and
-reject a dependency that resolves *below* a version something else asked for — the case that
-matters here is `docker-java-api`, pinned by hand to track whatever Testcontainers resolves, which
-would otherwise surface at runtime as a `NoSuchMethodError`. The compiler runs `-Xlint:all` with
+reject a dependency that resolves *below* a version something else asked for, which would otherwise
+surface at runtime as a `NoSuchMethodError` rather than at build time. The compiler runs `-Xlint:all` with
 warnings fatal. The javadoc pass publishes nothing: it is there to catch a `{@link}` left pointing
 at a method that has since been renamed. It runs over the tests as well as the fixtures, because
 the test classes are the ones that explain themselves by naming classes they never call. Missing
@@ -138,8 +138,9 @@ rejected.
 
 Unlike the replication fixture, a cluster runs all of its nodes in **one** container, announcing
 `127.0.0.1` on ports published one-to-one to the host and drawn consecutively from a random base
-between 20000 and 40000. A cluster client is given seed addresses but then connects to the ones the
-cluster *advertises*, and loopback is the only address that means the same thing to a peer node and
+between 20000 and 32000 — below where Linux starts handing out ephemeral ports, so that nothing
+else on the machine is being offered the same ones. A cluster client is given seed addresses but
+then connects to the ones the cluster *advertises*, and loopback is the only address that means the same thing to a peer node and
 to a test JVM on the host. `RedisCluster`'s class comment has the long version, including why
 `--cluster-announce-ip` does not rescue a container-per-node shape.
 
@@ -172,7 +173,7 @@ share one fixture.
 ## Code coverage
 
 A `mvn test` run writes a JaCoCo report to `target/site/jacoco/index.html`, and a `check` execution
-fails the build under **94% instruction coverage** (`jacoco.minimum.coverage` in the pom). What the
+fails the build under **95% instruction coverage** (`jacoco.minimum.coverage` in the pom). What the
 bundle measures is the fixtures under `src/main/java`, so read it as "which fixture paths does the
 suite exercise" rather than as a quality bar, and do not read the remainder above the floor as a
 to-do list. The pom comments carry the reasoning — why instructions rather than branches, why one
