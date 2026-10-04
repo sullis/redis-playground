@@ -188,7 +188,7 @@ mvn -ntp test -Dtest=ClusterTest -Djacoco.check.skip=true
 ## Testcontainers
 
 - [Testcontainers Redis module](https://testcontainers.com/modules/redis/)
-- [testcontainers-redis java library](https://github.com/redis-developer/testcontainers-redis)
+- [testcontainers-redis java library](https://github.com/redis-field-engineering/testcontainers-redis)
 
 ## Apache NiFi and Redis
 
