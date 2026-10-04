@@ -22,7 +22,7 @@
     <!-- A property rather than the compiler plugin's own <release>, so that the enforcer rule
          below and any IDE reading the pom see the same number the compiler does. -->
     <maven.compiler.release>17</maven.compiler.release>
-    <logback.version>1.6.4</logback.version>
+    <logback.version>1.6.5</logback.version>
     <slf4j.version>2.0.20</slf4j.version>
     <jacoco.version>0.8.15</jacoco.version>
     <!-- The bundle-wide instruction coverage the jacoco check execution enforces. The bundle is
