@@ -204,3 +204,6 @@ mvn -ntp test -Dtest=ClusterTest -Djacoco.check.skip=true
 ## License
 
 [Apache License 2.0](LICENSE)
+
+## Related work
+- https://github.com/sullis/valkey-playground
